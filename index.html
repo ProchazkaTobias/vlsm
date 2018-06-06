@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Hello, world!</title>
+  </head>
+
+  <body>
+  <style>
+  table {
+    width: 600px;
+  }
+  td {
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid black;
+  }
+  
+  </style>
+    <script type="text/javascript">
+
+
+      function addFields() {
+        // Number of inputs to create
+        var number = document.getElementById("numSubnets").value;
+        // Container <div> where dynamic content will be placed
+        var container = document.getElementById("container");
+        // Clear previous contents of the container
+        while (container.hasChildNodes()) {
+          container.removeChild(container.lastChild);
+        }
+				if(number < 20){
+        for (i = 0; i < number; i++) {
+          // Append a node with a random text
+          container.appendChild(document.createTextNode("velikost subnetu " + (i + 1) + ": "));
+          // Create an <input> element, set its type and name attributes
+          var input = document.createElement("input");
+          input.type = "text";
+          input.name = "subnet" + i;
+          input.setAttribute("id","subnet" + i);
+          container.appendChild(input);
+          // Append a line break 
+          container.appendChild(document.createElement("br"));
+        }
+        }
+      }
+
+      function vlsm() {
+
+        var ip = document.getElementById("address").value;
+				 
+        if(ip.split(".").length != 4){
+          document.getElementById("p1").innerHTML = "adresa je ve špatném formátu, příklad: 192.168.0.1/24";
+        }
+        else if (ip.indexOf("/") === -1) {
+          document.getElementById("p1").innerHTML = "missing mask";
+        }
+        else {
+
+          document.getElementById("p1").innerHTML = "";
+          var cidr = ip.split("/");
+          var address = cidr[0];
+          var mask = cidr[1];
+        }
+      }
+
+        function calculateSubnetMask( ip, prefixSize )
+        {
+          var ipNum;
+
+          try
+          {
+            ipNum = this.toDecimal(ip);
+          }
+          catch( err )
+          {
+            return null;
+          }
+          return this.getMaskRange( ipNum, prefixSize );
+          
+        }
+        
+      	function getMaskRange( ipNum, prefixSize )
+        {
+        //alert(ipNum & prefixMask ) >>> 0);
+        alert(ipNum >>> 0);
+          var prefixMask	= this.getPrefixMask( prefixSize ),
+            lowMask		= this.getMask( 32 - prefixSize ),
+            ipLow		= ( ipNum & prefixMask ) >>> 0,
+            ipHigh		= ( ( ( ipNum & prefixMask ) >>> 0 ) + lowMask ) >>> 0;
+            
+          	return {
+            ipLow			: ipLow,
+            ipLowStr		: this.toString( ipLow ),
+
+            ipHigh			: ipHigh,
+            ipHighStr		: this.toString( ipHigh ),
+
+            prefixMask		: prefixMask,
+            prefixMaskStr	: this.toString( prefixMask ),
+            prefixSize		: prefixSize,
+
+            invertedMask	: lowMask,
+            invertedMaskStr	: this.toString( lowMask ),
+            invertedSize	: 32 - prefixSize
+          };
+        }
+        
+      	function toDecimal(ipString)
+        {
+        	ipString = parseInt(ipString);
+          if( ( typeof ipString === 'number' ) && ( this.isDecimalIp( ipString ) === true ) )
+          {
+            return ipString;
+          }
+
+          if( this.isIp( ipString ) === false )
+          {
+          	alert("toDecimalErr");
+            throw new Error( 'Not an IP address: ' + ipString );
+          }
+
+          var d = ipString.split( '.' );
+          return ( ( ( ( ( ( +d[ 0 ] ) * 256 ) + ( +d [ 1 ] ) ) * 256 ) + ( +d[ 2 ] ) ) * 256 ) + ( +d[ 3 ] );
+        }
+        
+        	function isDecimalIp(ipNum)
+          {
+            return (
+                ( typeof ipNum === 'number' ) && // is this a number?
+                ( ipNum % 1 === 0 ) && // does the number have a decimal place?
+                ( ipNum >= 0 ) &&
+                ( ipNum <= 4294967295 )
+              );
+          }
+          
+      		function getPrefixMask( prefixSize )
+          {
+            var mask = 0,
+              i;
+
+            for( i = 0; i < prefixSize; i++ )
+            {
+              mask += ( 1 << ( 32 - ( i + 1 ) ) ) >>> 0;
+            }
+
+            return mask;
+          }
+          
+      		function getMask( maskSize )
+          {
+            var mask = 0,
+              i;
+
+            for( i = 0; i < maskSize; i++ )
+            {
+              mask += ( 1 << i ) >>> 0;
+            }
+
+            return mask;
+          }
+          
+      		function showResult( elementName, msg )
+          {
+            $( '#' + elementName ).html( msg );
+            $( '#' + elementName ).slideDown( 'fast' );
+          };
+
+        function save() {
+        	$('table').empty();
+          var numberOfSubnets = document.getElementById("numSubnets").value;
+          
+          var table = document.createElement("table");
+          table.setAttribute("id","table");
+          var trHeader = document.createElement('tr');
+          
+          
+          var tdBlank = document.createElement('td');
+          var tdHeaderSubnetSize = document.createElement('td');
+          var tdHeaderSubnetAllocateSize = document.createElement('td');
+          var tdHeaderSubnetRange = document.createElement('td');
+          
+          
+          var textBlank = document.createTextNode("");
+          var textHeaderSubnetSize = document.createTextNode("Velikost subnetu");
+          var textHeaderSubnetAllocatedSize = document.createTextNode("Alokovaná velikost");
+          var textHeaderSubnetRange = document.createTextNode("rozsah ip adres");
+          
+          tdBlank.appendChild(textBlank);
+          tdHeaderSubnetSize.appendChild(textHeaderSubnetSize);
+          tdHeaderSubnetAllocateSize.appendChild(textHeaderSubnetAllocatedSize); 
+          tdHeaderSubnetRange.appendChild(textHeaderSubnetRange);
+          
+          trHeader.appendChild(tdBlank);
+          trHeader.appendChild(tdHeaderSubnetSize);
+          trHeader.appendChild(tdHeaderSubnetAllocateSize);
+          trHeader.appendChild(tdHeaderSubnetRange);
+          
+          table.appendChild(trHeader);
+          
+          
+          var ip = document.getElementById("address").value;
+          var cidr = ip.split("/");
+          var address = cidr[0];
+          var mask = cidr[1];
+          
+          var d = address.split(".");
+          d[2] = 0;
+          var lowAddress = d[0] + "." + d[1] + "." + d[2] + "." + 1;
+          var low = address.split(".");
+          var subnet2 = d[2];
+          d[3] = 0;
+          
+          var wholeSize = 0;
+
+          for(i = 0; i < numberOfSubnets; i++)
+          {
+            var subnetSize = document.getElementById("subnet"+i).value;
+            
+            var allocatedSize = 4;
+            while(subnetSize > (allocatedSize-2))
+            {
+            	allocatedSize *= 2;
+            }
+            allocatedSize -= 2;
+            
+            wholeSize += allocatedSize;
+            
+            if(mask < 0 || mask > 30){
+              document.getElementById("p1").innerHTML = "maska musí být větší než 0 a menší než 30";
+            }
+            else{
+              
+            }
+
+            var zbytek = (allocatedSize - 2) % 254;
+            
+            if(allocatedSize < 510){
+            	zbytek += 2;
+            }
+            
+            //alert(zbytek);
+            if(zbytek == 0){
+              if(d[2] > 0){
+              	d[2] = (parseInt(d[2]) + Math.floor((allocatedSize - 2) / 254));
+              }
+              else{
+              	d[2] = (parseInt(d[2]) + Math.floor((allocatedSize - 2) / 254) - 1);	
+              }
+            	d[3] = 254;
+            }
+            else if(parseInt(d[3]) + zbytek <= 254){
+            	d[3] = parseInt(d[3]) + zbytek;
+            }
+            else{
+            	if(d[3] < 127){
+                zbytek = zbytek - d[3];
+                d[2] = parseInt(d[2]) + Math.floor((allocatedSize - 2) / 254);
+                d[3] = zbytek;
+              }
+              else{
+                //zbytek = d[3] - zbytek;
+                if(d[3] == 254){
+                	d[2] = parseInt(d[2]) + Math.floor((allocatedSize - 2) / 254) + 1;
+                }
+                else{
+                	d[2] = parseInt(d[2]) + Math.floor((allocatedSize - 2) / 254);
+                }
+                d[3] = zbytek;
+              }
+            }
+          
+            var highAddress = d[0] + "." + d[1] + "." + d[2] + "." + d[3];
+            
+            var tr = document.createElement('tr');   
+
+            var tdText = document.createElement('td');
+            var tdSize = document.createElement('td');
+            var tdAllocatedSize = document.createElement('td');
+						var tdSubnetRange = document.createElement('td');
+            var tdSubnetMask = document.createElement('td');
+
+            var text = document.createTextNode('Subnet' + (i+1) + ": ");
+            var textSize = document.createTextNode(subnetSize);
+            var textAllocatedSize = document.createTextNode(allocatedSize);
+            var textSubnetRange = document.createTextNode(lowAddress + " - " + highAddress);
+            var textSubnetMask = document.createTextNode("");
+            
+            if(d[3] != 254){
+            	d[3] += 3;
+            	lowAddress = d[0] + "." + d[1] + "." + d[2] + "." + d[3];
+              d[3] -= 1;
+            	//d[3] -= 2;
+            }
+            else{
+            	d[2] = parseInt(d[2]) + 1;
+            	lowAddress = d[0] + "." + d[1] + "." + d[2] + "." + 1;
+              d[2] = d[2] = parseInt(d[2]) - 1;
+            }
+            
+            tdText.appendChild(text);
+            tdSize.appendChild(textSize);
+            tdAllocatedSize.appendChild(textAllocatedSize);
+            tdSubnetRange.appendChild(textSubnetRange);
+            tdSubnetMask.appendChild(textSubnetMask);
+            
+            tr.appendChild(tdText);
+            tr.appendChild(tdSize);
+            tr.appendChild(tdAllocatedSize);
+            tr.appendChild(tdSubnetRange);
+            tr.appendChild(tdSubnetMask);
+
+            table.appendChild(tr);
+          }
+          document.body.appendChild(table);
+          
+          //document.getElementById("table").style.borderSpacing = "0px";
+          //documetn.getElementById("table").style.cssFloat = "left";
+          //document.getElementById("table").style.padding = "20px 10px 20px 30px";
+					
+        }
+
+    </script>
+
+    <form name="addem" action="" id="addem">
+    <table>
+      <tr>
+        <p>ip adresa:<input type="text" name="tb1" onkeyup="vlsm()" id="address" /></p>
+      </tr>
+      <tr>
+        Number of subnets:<input type="text" id="numSubnets" name="numSubnets" value="" onkeyup="addFields()"><br/>
+      </tr>
+      
+      <p id="p1"></p>
+      <table id="dynamicTable"></table>
+      <button type="button" onclick="save()">calculate</button>
+      <div id="container" /><br/>
+    </table>
+    </form>
+    <div class="result" id="ip_calculate_cidr_mask_result" style="">
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </body>
+
+</html>
