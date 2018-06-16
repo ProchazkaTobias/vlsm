@@ -9,10 +9,11 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-    <title>Hello, world!</title>
+    <title>VLSM</title>
   </head>
 
   <body>
+    <h1>VLSM kalkulačka</h1>
   <style>
   table {
     width: 600px;
@@ -220,12 +221,17 @@
           
           var wholeSize = 0;
 
-          for(i = 0; i < numberOfSubnets; i++)
+          var subnetSizes = [];
+          for(i = 0; i < numberOfSubnets; i++){
+            let subnetSize = document.getElementById("subnet"+i).value;
+            subnetSizes.push(subnetSize);
+          }
+          subnetSizes.sort(function(a, b){return b-a});
+          for(i = 0; i < subnetSizes.length; i++)
           {
-            var subnetSize = document.getElementById("subnet"+i).value;
             
             var allocatedSize = 4;
-            while(subnetSize > (allocatedSize-2))
+            while(subnetSizes[i] > (allocatedSize-2))
             {
             	allocatedSize *= 2;
             }
@@ -258,6 +264,7 @@
             }
             else if(parseInt(d[3]) + zbytek <= 254){
             	d[3] = parseInt(d[3]) + zbytek;
+              d[2] = (parseInt(d[2]) + Math.floor((allocatedSize - 2) / 254));
             }
             else{
             	if(d[3] < 127){
@@ -288,7 +295,7 @@
             var tdSubnetMask = document.createElement('td');
 
             var text = document.createTextNode('Subnet' + (i+1) + ": ");
-            var textSize = document.createTextNode(subnetSize);
+            var textSize = document.createTextNode(subnetSizes[i]);
             var textAllocatedSize = document.createTextNode(allocatedSize);
             var textSubnetRange = document.createTextNode(lowAddress + " - " + highAddress);
             var textSubnetMask = document.createTextNode("");
